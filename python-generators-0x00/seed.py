@@ -23,7 +23,7 @@ def create_database(connection=None):
                     cursor.execute("CREATE DATABASE ALX_prodev")
                     print("Database created successfully")
         except mysql.connector.Error as err:
-            print(f"Not Error is {err}")
+            print(f"Error is {err}")
         finally:
             if connection and connection.is_connected():
                 connection.close()
