@@ -1,6 +1,7 @@
 import sqlite3 
 import functools
 
+
 def with_db_connection(func):
     def wrapper(*args, **kwargs):
         try:
