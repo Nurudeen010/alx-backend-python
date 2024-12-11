@@ -20,12 +20,12 @@ def stream_user_ages():
 
 def check_average_age():
     result_from_query = stream_user_ages()
-    newNumber = 0
-    average = sum(item for item in result_from_query if item is not None)/ 2
-    print(average)
+    Ages = [item for item in result_from_query if item is not None]
+    average = sum(Ages)/ len(Ages)
+    return average
+    
 
 
 
 
-check_average_age()
-#stream_user_ages()
+print(check_average_age())
