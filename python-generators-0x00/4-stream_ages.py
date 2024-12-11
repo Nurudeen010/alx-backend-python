@@ -22,7 +22,7 @@ def check_average_age():
     result_from_query = stream_user_ages()
     Ages = [item for item in result_from_query if item is not None]
     average = sum(Ages)/ len(Ages)
-    return average
+    return f"average is {average} and answer is {2+2}" 
     
 
 
