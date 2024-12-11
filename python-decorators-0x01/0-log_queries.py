@@ -1,5 +1,6 @@
 import sqlite3
 import functools
+from datetime import datetime
 import seed
 
 
@@ -7,7 +8,9 @@ import seed
 
 def log_queries(func):
     def wrapper(*args, **kwargs):
-        print(f"The query is: {kwargs[0]}")
+        print(f'''The query is: {kwargs}\n
+              time is {datetime.hour}
+              ''')
         return func(*args, **kwargs)
     return wrapper
 
@@ -29,5 +32,5 @@ def fetch_all_users(query):
     conn.close()
     return results
 
-newLOg = fetch_all_users(query="SELECT * FROM user_data limit 4")
-print(newLOg)
+
+fetch_all_users(query="SELECT * FROM user_data limit 4")
