@@ -3,7 +3,7 @@ import asyncio
 
 async def async_fetch_users(database):
     async with aiosqlite.connect(database=database) as asynccursor:
-        query = "SELECT * FROM user_data"
+        query = "SELECT * FROM users"
         async with asynccursor.execute(query) as cursor:
             allData = await cursor.fetchall()
             for row in allData:
@@ -12,7 +12,7 @@ async def async_fetch_users(database):
 
 async def async_fetch_older_users(database):
     async with aiosqlite.connect(database=database) as asynccursor:
-        query = "SELECT * FROM user_data where age > 25"
+        query = "SELECT * FROM users where age > 40"
         async with asynccursor.execute(query) as cursor:
             allData = await cursor.fetchall()
             for row in allData:
