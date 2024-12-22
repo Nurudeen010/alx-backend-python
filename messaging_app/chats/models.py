@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
+import uuid
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **kwargs):
@@ -57,7 +58,7 @@ class user(AbstractBaseUser):
     ]
 
 
-class conversation(models.Model):
+class Conversation(models.Model):
 
     '''
             Conversation
@@ -65,12 +66,12 @@ class conversation(models.Model):
         participants_id (Foreign Key, references User(user_id)
         created_at (TIMESTAMP, DEFAULT CURRENT_TIMESTAMP)
     '''
-    conversation_id = models.IntegerField(primary_key=True)
+    conversation_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     participants_id = models.ForeignKey(user, on_delete=models.DO_NOTHING ,null=True)
     created_at = models.TimeField(auto_created=True)
     
 
-class message(models.Model):
+class Message(models.Model):
     '''
             Message
     message_id (Primary Key, UUID, Indexed)
@@ -79,6 +80,6 @@ class message(models.Model):
     sent_at (TIMESTAMP, DEFAULT CURRENT_TIMESTAMP)
     
     '''
-    message_id = models.IntegerField(primary_key=True)
+    message_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     sender_id = models.ForeignKey(user, on_delete=models.CASCADE, null=False)
     sent_at = models.TimeField(auto_created=True)
