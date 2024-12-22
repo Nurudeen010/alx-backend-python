@@ -12,10 +12,19 @@ class CustomUserManager(BaseUserManager):
         user.save(using = self._db)
         return user
     
-    def create_super_user(self, email, password=None, **kwargs):
-        kwargs.setdefault('Is_staff', True)
-        kwargs.setdefault('Is_superuser', True)
-        return self.create_super_user(email, password, **kwargs)
+    def create_superuser(self, email, password=None, **kwargs):
+        # Set is_staff and is_superuser to True for superusers
+        kwargs.setdefault('is_staff', True)
+        kwargs.setdefault('is_superuser', True)
+
+        # Ensure superuser requirements are met
+        if kwargs.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if kwargs.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        # Call the create_user method to create the superuser
+        return self.create_user(email, password, **kwargs)
     
 class user(AbstractBaseUser):
     '''
@@ -39,13 +48,15 @@ class user(AbstractBaseUser):
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
+    is_staff = models.BooleanField(default=True)
+    is_superuser = models.BooleanField(default=True)
     phone_number = models.CharField(max_length=15)
     role = models.CharField(
         max_length=10,
         choices=role_choices,
         default='guest'
     )
-    created_at = models.TimeField(auto_created=True)
+    created_at = models.TimeField(auto_now_add=True)
 
     objects = CustomUserManager()
 
@@ -68,7 +79,7 @@ class Conversation(models.Model):
     '''
     conversation_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     participants_id = models.ForeignKey(user, on_delete=models.DO_NOTHING ,null=True)
-    created_at = models.TimeField(auto_created=True)
+    created_at = models.TimeField(auto_now_add=True)
     
 
 class Message(models.Model):
