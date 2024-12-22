@@ -16,5 +16,5 @@ class ConversationViewSet(viewsets.ViewSet):
 class MessageViewSet(viewsets.ViewSet):
     def list(self, request):
         queryset = Message.objects.all()
-        serializer = message(queryset, many=True)
+        serializer = message(queryset.filter, many=True)
         return Response(serializer.data)
