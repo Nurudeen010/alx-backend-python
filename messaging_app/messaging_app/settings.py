@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework'
+    'rest_framework',
+    'chats'
 ]
 
 MIDDLEWARE = [
@@ -98,6 +99,9 @@ REST_FRAMEWORK = {
     ]
 }
 
+#Custome User Settings
+
+AUTH_USER_MODEL = 'chats.user'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
