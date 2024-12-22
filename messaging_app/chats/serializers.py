@@ -11,12 +11,17 @@ class Users(serializers.ModelSerializer):
         model = Users
         fields = ['__all__']
 
-class message(serializers.ModelSerializer):
-    class Meta:
-        model = Message
-        fields = ['message_id', 'sender_id', 'message_body', 'sent_at']
+class message(serializers.Serializer):
+    message_id = serializers.UUIDField()
+    sender_id = serializers.IntegerField()
+    message_body = serializers.CharField()
+    sent_at = serializers.TimeField()
 
-
+    def validate(self, attrs):
+        if attrs['message_body'] == '':
+            raise serializers.ValidationError('The message_body must not be empty')
+        return attrs
+    
 class conversation(serializers.ModelSerializer):
     messages = serializers.SerializerMethodField()
     class Meta:
