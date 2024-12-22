@@ -82,4 +82,5 @@ class Message(models.Model):
     '''
     message_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     sender_id = models.ForeignKey(user, on_delete=models.CASCADE, null=False)
+    message_body = models.TextField(null=False, default='Your message here')
     sent_at = models.TimeField(auto_created=True)
