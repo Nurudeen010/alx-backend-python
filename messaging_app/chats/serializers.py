@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 Users = get_user_model()
 
 class User(serializers.ModelSerializer):
+    
     password = serializers.CharField(write_only=True, required=True)
     confirmed_password = serializers.CharField(write_only=True, required=True)
 
@@ -26,24 +27,33 @@ class User(serializers.ModelSerializer):
 class message(serializers.ModelSerializer):
     class Meta:
         model = Message
-        fields = ['message_id', 'message_body', 'sent_at']
-
-    def validate_message_body(self, value):
-        if value.strip() == '':
-            raise serializers.ValidationError('The message_body must not be empty')
-        return value
-
-    def create(self, validated_data):
-        return Message.objects.create(**validated_data)
+        fields = '__all__'
+        read_only_fields = ['message_id','sender_id', 'sent_at', 'conversation']
     
+    def create(self, validated_data):
+        # Automatically set sender_id to the logged-in user
+        request = self.context.get('request')
+        if request and hasattr(request, 'user'):
+            validated_data['sender_id'] = request.user
+        return super().create(validated_data)
 
 class conversation(serializers.ModelSerializer):
     messages = serializers.SerializerMethodField()
 
     class Meta:
         model = Conversation
-        fields = ['conversation_id', 'participant_id', 'created_at', 'messages']
+        fields = ['conversation_id', 'participants_id', 'created_at', 'messages']
+        read_only_fields = ['conversation_id', 'participants_id', 'created_at']
+
+    def create(self, validated_data):
+        # Automatically set sender_id to the logged-in user
+        request = self.context.get('request')
+        if request and hasattr(request, 'user'):
+            validated_data['participants_id'] = request.user
+        return super().create(validated_data)
+
 
     def get_messages(self, obj):
         # Assuming Conversation has a related_name='messages' on Message
-        return message(obj.messages.all(), many=True).data
+        messages = obj.messages.all()
+        return message(messages, many=True).data

@@ -1,5 +1,6 @@
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
+from django.conf import settings
 import uuid
 
 class CustomUserManager(BaseUserManager):
@@ -26,7 +27,7 @@ class CustomUserManager(BaseUserManager):
         # Call the create_user method to create the superuser
         return self.create_user(email, password, **kwargs)
     
-class user(AbstractBaseUser):
+class user(AbstractBaseUser, PermissionsMixin):
     '''
         Creating Abstract User Model for the following attributes
             User
@@ -78,7 +79,7 @@ class Conversation(models.Model):
         created_at (TIMESTAMP, DEFAULT CURRENT_TIMESTAMP)
     '''
     conversation_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    participants_id = models.ForeignKey(user, on_delete=models.DO_NOTHING ,null=True)
+    participants_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING ,null=True, related_name='conversations')
     created_at = models.TimeField(auto_now_add=True)
     
 
@@ -92,6 +93,12 @@ class Message(models.Model):
     
     '''
     message_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    sender_id = models.ForeignKey(user, on_delete=models.CASCADE, null=False)
-    message_body = models.TextField(null=False, default='Your message here')
-    sent_at = models.TimeField(auto_created=True)
+    sender_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='messages' )
+    message_body = models.TextField(null=False)
+    conversation = models.ForeignKey(
+    Conversation, 
+    on_delete=models.CASCADE, 
+    related_name='messages',
+    null=True
+)
+    sent_at = models.TimeField(auto_now_add=True)
