@@ -23,16 +23,19 @@ class User(serializers.ModelSerializer):
         user = Users.objects.create_user(**validated_data)
         return user
 
-class message(serializers.Serializer):
-    message_id = serializers.UUIDField(required=True)
-    sender_id = serializers.IntegerField(required=True)
-    message_body = serializers.CharField(required=True)
-    sent_at = serializers.TimeField(required=True)
+class message(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = ['message_id', 'message_body', 'sent_at']
 
     def validate_message_body(self, value):
         if value.strip() == '':
             raise serializers.ValidationError('The message_body must not be empty')
         return value
+
+    def create(self, validated_data):
+        return Message.objects.create(**validated_data)
+    
 
 class conversation(serializers.ModelSerializer):
     messages = serializers.SerializerMethodField()
