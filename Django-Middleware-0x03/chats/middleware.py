@@ -12,7 +12,7 @@ class RequestLoggingMiddleware:
         user = request.user if request.user.is_authenticated else "Anonymous"
         
         # Log the request details to a file
-        with open("request.log", "a") as log_file:
+        with open("requests.log", "a") as log_file:
             log_file.write(f"{datetime.now()} - User: {user} - Path: {request.path}\n")
         
         # Continue processing the request
