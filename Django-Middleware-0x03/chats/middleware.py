@@ -1,4 +1,5 @@
 import datetime
+from datetime import datetime
 from django.http import HttpResponseForbidden, JsonResponse
 import time
 
@@ -11,8 +12,8 @@ class RequestLoggingMiddleware:
         user = request.user if request.user.is_authenticated else "Anonymous"
         
         # Log the request details to a file
-        with open("request_logs.txt", "a") as log_file:
-            log_file.write(f"{datetime.datetime.now()} - User: {user} - Path: {request.path}\n")
+        with open("request.log", "a") as log_file:
+            log_file.write(f"{datetime.now()} - User: {user} - Path: {request.path}\n")
         
         # Continue processing the request
         response = self.get_response(request)
@@ -82,7 +83,7 @@ class OffensiveLanguageMiddleware:
             ip = request.META.get("REMOTE_ADDR")
         return ip
 
-class RolePermissionMiddleware:
+class RolepermissionMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 
